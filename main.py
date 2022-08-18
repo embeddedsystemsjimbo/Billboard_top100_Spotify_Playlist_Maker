@@ -13,12 +13,12 @@ SPOTIPY_REDIRECT_URI = os.environ.get("spotipy_redirect_uri")
 def get_billboard_top_100(billboard_date):
 
     """
-     Scrap https://www.billboard.com/charts/hot-100/ for top 100 songs on a given data
-        Parameter:
-            billboard_date (str): Date to search for billboard top 100 songs given in YYYY-MM-DD format.
-        Return:
-            artist_song_list (list/tuple/str): Returns list of two value tuples where first tuple position is the artist
-                                                name and the second tuple position in the song.
+         Scrap https://www.billboard.com/charts/hot-100/ for top 100 songs on a given data
+            Parameter:
+                billboard_date (str): Date to search for billboard top 100 songs given in YYYY-MM-DD format.
+            Return:
+                artist_song_list (list/tuple/str): Returns list of two value tuples where first tuple position is the artist
+                                                    name and the second tuple position in the song.
     """
 
     response = requests.get(f"https://www.billboard.com/charts/hot-100/{billboard_date}/")
