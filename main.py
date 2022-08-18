@@ -10,7 +10,6 @@ SPOTIPY_CLIENT_SECRET = os.environ.get("spotipy_client_secret")
 SPOTIPY_REDIRECT_URI = os.environ.get("spotipy_redirect_uri")
 
 
-
 def get_billboard_top_100(billboard_date):
 
     """
@@ -99,10 +98,20 @@ def artist_description_filter(artist_list):
 
 def get_song_uri(artist, song):
 
+    """
+        Get song uri identification string from Spotify
+            Parameters:
+                artist (str): Artist name.
+                song (str): Song name.
+            Return:
+                search_result_uri (str): Returns Spotify URI for given artist and song combination.
+    """
+
     try:
         # search spotify for song id
         search_result = sp.search(q=f"artist:{artist} track:{song}", type="track", limit=1)
-        return search_result["tracks"]["items"][0]["uri"]
+        search_result_uri = search_result["tracks"]["items"][0]["uri"]
+        return search_result_uri
     except IndexError:
         print(f'The song:"{song}" from artist:"{artist}" is not currently available')
 
@@ -114,24 +123,25 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=SPOTIPY_CLIENT_ID,
                                                redirect_uri=SPOTIPY_REDIRECT_URI,
                                                scope=scope))
 
-
+# print banner.
 print(logo)
 
 date = input("Which year do you want to travel to ? Type the date in this format YYYY-MM-DD ")
 
+# get URI list for given artist and song.
 song_uri_list = [get_song_uri(item[0], item[1]) for item in get_billboard_top_100(date)
                  if get_song_uri(item[0], item[1]) is not None]
 
-# create new playlist
+# create new playlist.
 playlist = sp.user_playlist_create(user=sp.me()["id"], name=f"Billboard Memories Playlist from {date}", public=False)
 
-# get ID of newly created playlist
+# get ID of newly created playlist.
 playlist_id = playlist["id"]
 
-# add billboard top 100 list to newly crated Spotify playlist
+# add billboard top 100 list to newly crated Spotify playlist.
 sp.playlist_add_items(playlist_id=playlist_id, items=song_uri_list)
 
-# get external url link to spotify playlist
+# get external url link to spotify playlist.
 external_url = sp.playlist(playlist_id=playlist_id)
 
 print(external_url["external_urls"]["spotify"])
